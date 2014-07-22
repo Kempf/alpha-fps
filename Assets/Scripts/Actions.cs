@@ -12,7 +12,7 @@ public class Actions : MonoBehaviour {
 			{
 				Rigidbody FireBullet;
 				FireBullet = Instantiate(Bullet, BarrelEnd.position, BarrelEnd.rotation) as Rigidbody;
-				FireBullet.AddForce(BarrelEnd.forward * 5000);
+				FireBullet.AddForce(BarrelEnd.forward * 1000);
 			}
 		}
 	}
