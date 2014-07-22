@@ -22,9 +22,9 @@ public class Menu : MonoBehaviour {
 	
 	void OnGUI() {
 		Rect Pos1 = new Rect (60, 20, 260, 22);
-		Rect Pos2 = new Rect (60, 50, 240, 22);
-		Rect Pos3 = new Rect (60, 80, 220, 22);
-		Rect Pos4 = new Rect (60, 110, 200, 22);
+		Rect Pos2 = new Rect (50, 50, 240, 22);
+		Rect Pos3 = new Rect (40, 80, 220, 22);
+		Rect Pos4 = new Rect (30, 110, 200, 22);
 		
 		if (MenuNum == 0) {
 			// draw the menu 
