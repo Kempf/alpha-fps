@@ -1,4 +1,4 @@
-alpha-fps
+AlphaFPS
 =========
 
-Unity FPS proof-of-concept
+Unity FPS proof-of-concept game.
