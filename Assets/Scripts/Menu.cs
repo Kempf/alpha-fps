@@ -27,9 +27,6 @@ public class Menu : MonoBehaviour {
 		Rect Pos4 = new Rect (60, 110, 200, 22);
 		
 		if (MenuNum == 0) {
-			// draw the menu 
-			//	GUI.Button(Pos1, "Join Server")
-			
 			if (GUI.Button (Pos1, "Join Server"))
 				MenuNum = 1;
 			
@@ -37,7 +34,8 @@ public class Menu : MonoBehaviour {
 				StartServer ();
 			
 			if (GUI.Button (Pos3, "Settings" ))
-				MenuNum = 3;
+				// IT'S A TRAP
+				// MenuNum = 3;
 			
 			if (GUI.Button (Pos4, "Exit"))
 				Application.Quit ();      
