@@ -10,17 +10,19 @@ public class Menu : MonoBehaviour {
 	
 	public string IPAddress = "Enter IP Address";
 	
+	// derpricated
 	public int ConNum = 4;
 	
+	// depricated - replace with NetworkManager's
 	void StartServer(){
 		Network.InitializeServer (ConNum, 25565, false);
 		Network.sendRate = 15;
 		Debug.Log ("Server Started");
 	}
 	
+	// derpicated - replace
 	void ConnectToServer () {
 		Network.Connect(IPAddress, 25565);
-		MenuNum = 2;	
 	}
 	
 	void OnGUI() {
@@ -33,12 +35,16 @@ public class Menu : MonoBehaviour {
 			if (GUI.Button (Pos1, "Join Server"))
 				MenuNum = 1;
 			
-			if (GUI.Button (Pos2, "Host Server"))
+			if (GUI.Button (Pos2, "Host Server")) {
+				// replace with NM's function
 				StartServer ();
+				Application.LoadLevel ("TestMap");
+			}
 			
-			if (GUI.Button (Pos3, "Settings" ))
+			if (GUI.Button (Pos3, "Settings" )) {
 				// IT'S A TRAP
 				// MenuNum = 3;
+			}
 			
 			if (GUI.Button (Pos4, "Exit"))
 				Application.Quit ();      
@@ -48,8 +54,12 @@ public class Menu : MonoBehaviour {
 			
 			IPAddress = GUI.TextArea (Pos1, IPAddress); 
 			
-			if (GUI.Button (Pos2, "Join Server"))
+			if (GUI.Button (Pos2, "Join Server")) {
+				// swap to networkmanager's
 				ConnectToServer();
+				// why was that here?
+				//MenuNum = 3;
+			}
 			
 			if (GUI.Button (Pos3, "Back"))
 				MenuNum = 0;     
