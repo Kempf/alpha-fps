@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+
+// TODO: Fix the fucking indents
 
 public class CharacterControl : MonoBehaviour {
 
@@ -26,26 +28,29 @@ public class CharacterControl : MonoBehaviour {
 		Screen.lockCursor = true;
 
 		}
-
-	void FixedUpdate () {
-
-		if (Input.GetKey ("escape"))
+	
+	
+	// player control function
+	
+	void InputMovement () {
+	  
+	  if (Input.GetKey ("escape"))
 			Screen.lockCursor = true; 
 
-
-				//Lean function
-				if (Input.GetButton ("Lean Left")) {
-						if (RotZ < MaxZ) {
-								RotZ += 5;
-						}
-				} else if (Input.GetButton ("Lean Right")) {
-						if (RotZ > -MaxZ) {
-								RotZ -= 5;
-						}
-				} else if (RotZ > 0)
-						RotZ -= 5;
-				else if (RotZ < 0)
+		//Lean function
+		if (Input.GetButton ("Lean Left")) {
+			if (RotZ < MaxZ) {
+				RotZ += 5;
+		  }
+		} else if (Input.GetButton ("Lean Right")) {
+			if (RotZ > -MaxZ) {
+				RotZ -= 5;
+			}
+		} else if (RotZ > 0) {
+				RotZ -= 5;
+		} else if (RotZ < 0) {
 						RotZ += 5;
+		}
 
 				//Raycasts for testing
 				Debug.DrawRay (transform.position, Vector3.down, Color.red);
@@ -88,9 +93,6 @@ public class CharacterControl : MonoBehaviour {
 						rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 				}
 				
-			
-
-
 				//General non flying scripts
 				if (onGround > 0) {
 						//Crouching onGround state
@@ -110,5 +112,16 @@ public class CharacterControl : MonoBehaviour {
 		//Gravity
 		rigidbody.AddForce (Vector3.down * gravity * 100);
 
-		}
 	}
+	
+	void FixedUpdate () {
+	
+	// only fuck with the player if it belongs to you, okay?  
+	
+    if (networkView.isMine)
+    {
+        InputMovement();
+    }  
+	}
+	
+}
