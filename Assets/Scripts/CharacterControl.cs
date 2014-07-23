@@ -23,23 +23,52 @@ public class CharacterControl : MonoBehaviour {
 
 	void Awake () {
 		Screen.lockCursor = true;
+		lastSynchronizationTime = Time.time;
 	}
-	
+
 	// network sync
-	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
-    Vector3 syncPosition = Vector3.zero;
-    if (stream.isWriting) {
-        syncPosition = rigidbody.position;
-        stream.Serialize(ref syncPosition);
-    } else {
-        stream.Serialize(ref syncPosition);
-        rigidbody.position = syncPosition;
+	private float lastSynchronizationTime = 0f;
+    private float syncDelay = 0f;
+    private float syncTime = 0f;
+    private Vector3 syncStartPosition = Vector3.zero;
+    private Vector3 syncEndPosition = Vector3.zero;
+
+    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+    {
+        Vector3 syncPosition = Vector3.zero;
+        Vector3 syncVelocity = Vector3.zero;
+        if (stream.isWriting)
+        {
+            syncPosition = rigidbody.position;
+            stream.Serialize(ref syncPosition);
+
+            syncPosition = rigidbody.velocity;
+            stream.Serialize(ref syncVelocity);
+        }
+        else
+        {
+            stream.Serialize(ref syncPosition);
+            stream.Serialize(ref syncVelocity);
+
+            syncTime = 0f;
+            syncDelay = Time.time - lastSynchronizationTime;
+            lastSynchronizationTime = Time.time;
+
+            syncEndPosition = syncPosition + syncVelocity * syncDelay;
+            syncStartPosition = rigidbody.position;
+        }
     }
-  }
-	
+
+	private void SyncedMovement()
+    {
+        syncTime += Time.deltaTime;
+
+        rigidbody.position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
+    }
+
 	// player control function
 	private void InputMovement () {
-	  
+
 	  if (Input.GetKey ("escape"))
 			Screen.lockCursor = true; 
 
@@ -89,7 +118,7 @@ public class CharacterControl : MonoBehaviour {
 			Vector3 targetVelocity = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
 			targetVelocity = transform.TransformDirection (targetVelocity);
 			targetVelocity *= speed;
-			
+
 			// Apply a force that attempts to reach our target velocity
 			Vector3 velocity = rigidbody.velocity;
 			Vector3 velocityChange = (targetVelocity - velocity);
@@ -98,7 +127,7 @@ public class CharacterControl : MonoBehaviour {
 			velocityChange.y = 0;
 			rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 		}
-				
+
 		//General non flying scripts
 		if (onGround > 0) {
 			//Crouching onGround state
@@ -118,12 +147,13 @@ public class CharacterControl : MonoBehaviour {
 		rigidbody.AddForce (Vector3.down * gravity * 100);
 
 	}
-	
+
 	void FixedUpdate () {
 	  // only fuck with the player if it belongs to you, okay?  
-    if (networkView.isMine) {
-        InputMovement();
-    }  
+		if (networkView.isMine) {
+			InputMovement();
+		} else {
+			SyncedMovement();
+		}
 	}
-	
 }
