@@ -10,26 +10,27 @@ public class Menu : MonoBehaviour {
 	
 	public string IPAddress = "Enter IP Address";
 	
-	// derpricated
+	// deprecated
 	public int ConNum = 4;
 	
-	// depricated - replace with NetworkManager's
-	void StartServer(){
+	// deprecated - replace with NetworkManager's
+	void StartServer() {
 		Network.InitializeServer (ConNum, 25565, false);
 		Network.sendRate = 15;
 		Debug.Log ("Server Started");
 	}
 	
-	// derpicated - replace
+	// deprecated - replace
 	void ConnectToServer () {
 		Network.Connect(IPAddress, 25565);
+		Debug.Log ("Trying to connect");
 	}
 	
 	void OnGUI() {
 		Rect Pos1 = new Rect (60, 20, 260, 22);
-		Rect Pos2 = new Rect (60, 50, 240, 22);
-		Rect Pos3 = new Rect (60, 80, 220, 22);
-		Rect Pos4 = new Rect (60, 110, 200, 22);
+		Rect Pos2 = new Rect (60, 50, 260, 22);
+		Rect Pos3 = new Rect (60, 80, 260, 22);
+		Rect Pos4 = new Rect (60, 110, 260, 22);
 		
 		if (MenuNum == 0) {
 			if (GUI.Button (Pos1, "Join Server"))
@@ -57,8 +58,7 @@ public class Menu : MonoBehaviour {
 			if (GUI.Button (Pos2, "Join Server")) {
 				// swap to networkmanager's
 				ConnectToServer();
-				// why was that here?
-				//MenuNum = 3;
+				MenuNum = 2;
 			}
 			
 			if (GUI.Button (Pos3, "Back"))
