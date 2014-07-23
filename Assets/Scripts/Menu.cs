@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+
+// TODO: Move all the network code to network manager
+// Use GameObject.Find("ObjectName").GetComponent<YourScriptName>().yourPublicVariable; to access
 
 public class Menu : MonoBehaviour {
 	
