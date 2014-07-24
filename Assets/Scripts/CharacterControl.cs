@@ -84,16 +84,14 @@ public class CharacterControl : MonoBehaviour {
 	Debug.DrawRay (transform.position, Vector3.down, Color.red);
 	Debug.DrawRay (transform.position, transform.TransformDirection (0, -1, 0), Color.red);
 	
-	if (look) {
-		//X Rotation
-		RotX += Input.GetAxis ("Mouse X") * sensitivityX;
-		transform.localEulerAngles = new Vector3 (0, RotX, transform.localEulerAngles.x);
+	//X Rotation
+	RotX += Input.GetAxis ("Mouse X") * sensitivityX;
+	transform.localEulerAngles = new Vector3 (0, RotX, transform.localEulerAngles.x);
 
-		//Y Rotation
-		RotY += Input.GetAxis ("Mouse Y") * sensitivityY;
-		RotY = Mathf.Clamp (RotY, MinY, MaxY);
-		transform.localEulerAngles = new Vector3 (-RotY, transform.localEulerAngles.y, RotZ);
-	}
+	//Y Rotation
+	RotY += Input.GetAxis ("Mouse Y") * sensitivityY;
+	RotY = Mathf.Clamp (RotY, MinY, MaxY);
+	transform.localEulerAngles = new Vector3 (-RotY, transform.localEulerAngles.y, RotZ);
 
 	//- Movement Controls ----------------------------------//
 	//Check onGround state
@@ -144,7 +142,7 @@ public class CharacterControl : MonoBehaviour {
 
 	void FixedUpdate () {
 		// only fuck with the player if it belongs to you, okay?  
-		if (networkView.isMine) {
+		if (networkView.isMine && (Network.isClient || Network.isServer)) {
 			InputMovement();
 		} else {
 			SyncedMovement();
