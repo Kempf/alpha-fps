@@ -21,53 +21,43 @@ public class CharacterControl : MonoBehaviour {
 	public float jumpHeight = 2.0f;
 	public int PKJump = 5000;
 	
-	private bool look = false;
-
 	void Awake () {
-		if (look)
-			Screen.lockCursor = true;
 		lastSynchronizationTime = Time.time;
 	}
 
 	// network sync
 	private float lastSynchronizationTime = 0f;
-    private float syncDelay = 0f;
-    private float syncTime = 0f;
-    private Vector3 syncStartPosition = Vector3.zero;
-    private Vector3 syncEndPosition = Vector3.zero;
+	private float syncDelay = 0f;
+	private float syncTime = 0f;
+	private Vector3 syncStartPosition = Vector3.zero;
+	private Vector3 syncEndPosition = Vector3.zero;
 
-    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
-    {
-        Vector3 syncPosition = Vector3.zero;
-        Vector3 syncVelocity = Vector3.zero;
-        if (stream.isWriting)
-        {
-            syncPosition = rigidbody.position;
-            stream.Serialize(ref syncPosition);
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
+		Vector3 syncPosition = Vector3.zero;
+		Vector3 syncVelocity = Vector3.zero;
+		if (stream.isWriting) {
+			syncPosition = rigidbody.position;
+			stream.Serialize(ref syncPosition);
+			syncPosition = rigidbody.velocity;
+			stream.Serialize(ref syncVelocity);
+        	} else {
+            		stream.Serialize(ref syncPosition);
+			stream.Serialize(ref syncVelocity);
 
-            syncPosition = rigidbody.velocity;
-            stream.Serialize(ref syncVelocity);
-        }
-        else
-        {
-            stream.Serialize(ref syncPosition);
-            stream.Serialize(ref syncVelocity);
+			syncTime = 0f;
+			syncDelay = Time.time - lastSynchronizationTime;
+			lastSynchronizationTime = Time.time;
 
-            syncTime = 0f;
-            syncDelay = Time.time - lastSynchronizationTime;
-            lastSynchronizationTime = Time.time;
+			syncEndPosition = syncPosition + syncVelocity * syncDelay;
+			syncStartPosition = rigidbody.position;
+		}
+	}
 
-            syncEndPosition = syncPosition + syncVelocity * syncDelay;
-            syncStartPosition = rigidbody.position;
-        }
-    }
+	private void SyncedMovement() {
+		syncTime += Time.deltaTime;
 
-	private void SyncedMovement()
-    {
-        syncTime += Time.deltaTime;
-
-        rigidbody.position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
-    }
+		rigidbody.position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
+	}
 
 	// player control function
 	private void InputMovement () {
@@ -161,6 +151,6 @@ public class CharacterControl : MonoBehaviour {
 		}
 		// enable mouse if not playing
 		if (Network.isClient || Network.isServer)
-			look = true;
+			Screen.lockCursor = true;
 	}
 }
