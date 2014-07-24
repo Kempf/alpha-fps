@@ -20,7 +20,6 @@ public class CharacterControl : MonoBehaviour {
 	public float maxVelocityChange = 10.0f;
 	public float jumpHeight = 2.0f;
 	public int PKJump = 5000;
-	public int Jumping = 0;
 
 	void Awake () {
 
@@ -73,17 +72,8 @@ public class CharacterControl : MonoBehaviour {
 								onGround = 0;
 				}
 
-				if (onGround == 0)
-						maxVelocityChange = 5f;
-				else if (onGround == 1)
-						maxVelocityChange = 10f;
-				else if (onGround == 2)
-					maxVelocityChange = 8f;
-
-
-
 				//Movement while on the ground (onGround == 1)
-		//		if (onGround == 1) {
+				if (onGround == 1) {
 						// Calculate how fast we should be moving
 						Vector3 targetVelocity = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
 						targetVelocity = transform.TransformDirection (targetVelocity);
@@ -94,9 +84,9 @@ public class CharacterControl : MonoBehaviour {
 						Vector3 velocityChange = (targetVelocity - velocity);
 						velocityChange.x = Mathf.Clamp (velocityChange.x, -maxVelocityChange, maxVelocityChange);
 						velocityChange.z = Mathf.Clamp (velocityChange.z, -maxVelocityChange, maxVelocityChange);
-						velocityChange.y = Jumping;
+						velocityChange.y = 0;
 						rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
-			//	}
+				}
 				
 			
 
@@ -112,14 +102,11 @@ public class CharacterControl : MonoBehaviour {
 						//If onGround is 1 or 2
 						if (onGround != 3) {
 								//Jumping
-								if (Input.GetButton ("Jump")) 
-										Jumping = 1;
-								else 
-										Jumping = 0;
+								if (Input.GetButton ("Jump")) {
+										rigidbody.AddRelativeForce (0, PKJump, PKJump/10);
+								}
 						}
 				}
-		else 
-			Jumping = 0;
 		//Gravity
 		rigidbody.AddForce (Vector3.down * gravity * 100);
 
