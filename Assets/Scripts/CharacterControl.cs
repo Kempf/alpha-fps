@@ -20,9 +20,12 @@ public class CharacterControl : MonoBehaviour {
 	public float maxVelocityChange = 10.0f;
 	public float jumpHeight = 2.0f;
 	public int PKJump = 5000;
+	
+	private bool look = false;
 
 	void Awake () {
-		Screen.lockCursor = true;
+		if (look)
+			Screen.lockCursor = true;
 		lastSynchronizationTime = Time.time;
 	}
 
@@ -90,16 +93,17 @@ public class CharacterControl : MonoBehaviour {
 		//Raycasts for testing
 		Debug.DrawRay (transform.position, Vector3.down, Color.red);
 		Debug.DrawRay (transform.position, transform.TransformDirection (0, -1, 0), Color.red);
-
-		//X Rotation
-		RotX += Input.GetAxis ("Mouse X") * sensitivityX;
-		transform.localEulerAngles = new Vector3 (0, RotX, transform.localEulerAngles.x);
-
-		//Y Rotation
-		RotY += Input.GetAxis ("Mouse Y") * sensitivityY;
-		RotY = Mathf.Clamp (RotY, MinY, MaxY);
-		transform.localEulerAngles = new Vector3 (-RotY, transform.localEulerAngles.y, RotZ);
-
+		
+		if (look) {
+			//X Rotation
+			RotX += Input.GetAxis ("Mouse X") * sensitivityX;
+			transform.localEulerAngles = new Vector3 (0, RotX, transform.localEulerAngles.x);
+	
+			//Y Rotation
+			RotY += Input.GetAxis ("Mouse Y") * sensitivityY;
+			RotY = Mathf.Clamp (RotY, MinY, MaxY);
+			transform.localEulerAngles = new Vector3 (-RotY, transform.localEulerAngles.y, RotZ);
+		}
 
 		//- Movement Controls ----------------------------------//
 		//Check onGround state
@@ -149,11 +153,14 @@ public class CharacterControl : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-	  // only fuck with the player if it belongs to you, okay?  
+		// only fuck with the player if it belongs to you, okay?  
 		if (networkView.isMine) {
 			InputMovement();
 		} else {
 			SyncedMovement();
 		}
+		// enable mouse if not playing
+		if (Network.isClient || Network.isServer)
+			look = true;
 	}
 }
