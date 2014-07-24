@@ -150,7 +150,10 @@ public class CharacterControl : MonoBehaviour {
 			SyncedMovement();
 		}
 		// enable mouse if not playing
-		if (Network.isClient || Network.isServer)
+		if (Network.isClient || Network.isServer) {
 			Screen.lockCursor = true;
+		} else {
+			Screen.lockCursor = false;
+		}
 	}
 }
