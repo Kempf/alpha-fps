@@ -13,6 +13,7 @@ public class Menu : MonoBehaviour {
 		Network.InitializeServer (ConNum, 25565, false);
 		Network.sendRate = 15;
 		Debug.Log ("Server Started");
+		Application.LoadLevel ("TestMap");
 	}
 	
 	void ConnectToServer () {
@@ -36,8 +37,9 @@ public class Menu : MonoBehaviour {
 			if (GUI.Button (Pos2, "Host Server"))
 				StartServer ();
 			
+			// IT'S A TRAP
 			if (GUI.Button (Pos3, "Settings" ))
-				MenuNum = 3;
+				MenuNum = 0;
 			
 			if (GUI.Button (Pos4, "Exit"))
 				Application.Quit ();      
@@ -45,7 +47,8 @@ public class Menu : MonoBehaviour {
 		
 		if (MenuNum == 1) {
 			
-			IPAddress = GUI.TextArea (Pos1, IPAddress); 
+			// maxlength 15
+			IPAddress = GUI.TextArea (Pos1, IPAddress, 15); 
 			
 			if (GUI.Button (Pos2, "Join Server"))
 				ConnectToServer();
